@@ -3,6 +3,8 @@
 #include <Camera/CameraComponent.h>
 #include <Player/STUBaseCharacter.h>
 #include <Components/InputComponent.h>
+#include <GameFramework/SpringArmComponent.h>
+
 
 // Sets default values
 ASTUBaseCharacter::ASTUBaseCharacter()
@@ -10,10 +12,15 @@ ASTUBaseCharacter::ASTUBaseCharacter()
     // Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need
     // it.
     PrimaryActorTick.bCanEverTick = true;
-
-    // Create camera component and attach to capsule component
+        
+    // Create spring arm component and attach to capsule component
+    SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>("SpringArmComponent");
+    SpringArmComponent->SetupAttachment(GetRootComponent());
+    SpringArmComponent->bUsePawnControlRotation = true; // Enable relative rotation to it's parent
+    
+    // Create camera component and attach to spring arm component
     CameraComponent = CreateDefaultSubobject<UCameraComponent>("CameraComponent");
-    CameraComponent->SetupAttachment(GetRootComponent());
+    CameraComponent->SetupAttachment(SpringArmComponent);
 }
 
 // Called when the game starts or when spawned
@@ -34,14 +41,30 @@ void ASTUBaseCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputCo
     Super::SetupPlayerInputComponent(PlayerInputComponent);
     PlayerInputComponent->BindAxis("MoveForward", this, &ASTUBaseCharacter::MoveForward);
     PlayerInputComponent->BindAxis("MoveRight", this, &ASTUBaseCharacter::MoveRight);
+    PlayerInputComponent->BindAxis("LookUp", this, &ASTUBaseCharacter::LookUp);
+    PlayerInputComponent->BindAxis("TurnAround", this, &ASTUBaseCharacter::TurnAround);
 }
 
 void ASTUBaseCharacter::MoveForward(float Amount)
 {
+    // Add movement to our character
     AddMovementInput(GetActorForwardVector(), Amount);
 }
 
 void ASTUBaseCharacter::MoveRight(float Amount)
 {
+    // Add movement to our character
     AddMovementInput(GetActorRightVector(), Amount);
+}
+
+void ASTUBaseCharacter::LookUp(float Amount)
+{
+    // Add camera rotation to our character
+    AddControllerPitchInput(Amount);
+}
+
+void ASTUBaseCharacter::TurnAround(float Amount)
+{
+    // Add camera rotation to our character
+    AddControllerYawInput(Amount);
 }

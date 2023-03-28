@@ -7,6 +7,7 @@
 #include "STUBaseCharacter.generated.h"
 
 class UCameraComponent;
+class USpringArmComponent;
 
 UCLASS()
 class SHOOTTHEMUP_API ASTUBaseCharacter : public ACharacter
@@ -21,6 +22,9 @@ class SHOOTTHEMUP_API ASTUBaseCharacter : public ACharacter
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     UCameraComponent *CameraComponent;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+    USpringArmComponent *SpringArmComponent;
+
     // Called when the game starts or when spawned
     virtual void BeginPlay() override;
 
@@ -32,6 +36,11 @@ class SHOOTTHEMUP_API ASTUBaseCharacter : public ACharacter
     virtual void SetupPlayerInputComponent(class UInputComponent *PlayerInputComponent) override;
 
   private:
+    // Keys Input
     void MoveForward(float Amount);
     void MoveRight(float Amount);
+
+    // Mouse Input
+    void LookUp(float Amount);
+    void TurnAround(float Amount);
 };
