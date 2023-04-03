@@ -38,6 +38,9 @@ class SHOOTTHEMUP_API ASTUBaseCharacter : public ACharacter
     UFUNCTION(BlueprintCallable, Category = "Movement")
     bool IsRunning() const;
 
+    UFUNCTION(BlueprintCallable, Category = "Movement")
+    float GetMovementDirection() const;
+
   private:
     bool WantsToRun = false;
     bool IsMovingForward = false;
