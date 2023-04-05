@@ -8,6 +8,8 @@
 
 class UCameraComponent;
 class USpringArmComponent;
+class USTUHealthComponent;
+class UTextRenderComponent;
 
 UCLASS()
 class SHOOTTHEMUP_API ASTUBaseCharacter : public ACharacter
@@ -24,6 +26,12 @@ class SHOOTTHEMUP_API ASTUBaseCharacter : public ACharacter
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     USpringArmComponent *SpringArmComponent;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+    USTUHealthComponent *HealthComponent;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+    UTextRenderComponent *HealthTextComponent;
 
     // Called when the game starts or when spawned
     virtual void BeginPlay() override;
@@ -54,4 +62,8 @@ class SHOOTTHEMUP_API ASTUBaseCharacter : public ACharacter
     // Mouse Input
     void LookUp(float Amount);
     void TurnAround(float Amount);
+
+    UFUNCTION()
+    void OnTakeAnyDamageHandle(AActor *DamagedActor, float Damage, const class UDamageType *DamageType,
+                               class AController *InstigatedBy, AActor *DamageCauser);
 };

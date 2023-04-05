@@ -1,10 +1,15 @@
 // Shoot Them Up Game
 
+#include <Player/STUBaseCharacter.h>
+
 #include <Camera/CameraComponent.h>
 #include <Components/InputComponent.h>
 #include <Components/STUCharacterMovementComponent.h>
+#include <Components/STUHealthComponent.h>
+#include <Components/TextRenderComponent.h>
 #include <GameFramework/SpringArmComponent.h>
-#include <Player/STUBaseCharacter.h>
+
+DEFINE_LOG_CATEGORY_STATIC(LogBaseCharacter, All, All)
 
 // Sets default values
 ASTUBaseCharacter::ASTUBaseCharacter(const FObjectInitializer &ObjInit)
@@ -23,18 +28,36 @@ ASTUBaseCharacter::ASTUBaseCharacter(const FObjectInitializer &ObjInit)
     // Create camera component and attach to spring arm component
     CameraComponent = CreateDefaultSubobject<UCameraComponent>("CameraComponent");
     CameraComponent->SetupAttachment(SpringArmComponent);
+
+    HealthComponent = CreateDefaultSubobject<USTUHealthComponent>("HealthComponent");
+
+    HealthTextComponent = CreateDefaultSubobject<UTextRenderComponent>("HealthTextComponent");
+    HealthTextComponent->SetupAttachment(GetRootComponent());
 }
 
 // Called when the game starts or when spawned
 void ASTUBaseCharacter::BeginPlay()
 {
     Super::BeginPlay();
+
+    OnTakeAnyDamage.AddDynamic(this, &ASTUBaseCharacter::OnTakeAnyDamageHandle);
 }
 
 // Called every frame
 void ASTUBaseCharacter::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
+
+    const auto Health = HealthComponent->GetHealth();
+    HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), Health)));
+
+    TakeDamage(0.1f, FDamageEvent{}, Controller, this);
+}
+
+void ASTUBaseCharacter::OnTakeAnyDamageHandle(AActor *DamagedActor, float Damage, const class UDamageType *DamageType,
+                                              class AController *InstigatedBy, AActor *DamageCauser)
+{
+    UE_LOG(LogBaseCharacter, Display, TEXT("Damage: %0.1f"), Damage);
 }
 
 // Called to bind functionality to input
