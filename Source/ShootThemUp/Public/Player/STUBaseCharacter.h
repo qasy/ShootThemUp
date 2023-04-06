@@ -62,8 +62,4 @@ class SHOOTTHEMUP_API ASTUBaseCharacter : public ACharacter
     // Mouse Input
     void LookUp(float Amount);
     void TurnAround(float Amount);
-
-    UFUNCTION()
-    void OnTakeAnyDamageHandle(AActor *DamagedActor, float Damage, const class UDamageType *DamageType,
-                               class AController *InstigatedBy, AActor *DamageCauser);
 };

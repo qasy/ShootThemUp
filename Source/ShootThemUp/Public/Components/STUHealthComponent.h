@@ -29,4 +29,8 @@ class SHOOTTHEMUP_API USTUHealthComponent : public UActorComponent
 
   private:
     float Health = 0.0f;
+
+    UFUNCTION()
+    void OnTakeAnyDamageHandle(AActor *DamagedActor, float Damage, const class UDamageType *DamageType,
+                               class AController *InstigatedBy, AActor *DamageCauser);
 };

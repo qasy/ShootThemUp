@@ -39,8 +39,6 @@ ASTUBaseCharacter::ASTUBaseCharacter(const FObjectInitializer &ObjInit)
 void ASTUBaseCharacter::BeginPlay()
 {
     Super::BeginPlay();
-
-    OnTakeAnyDamage.AddDynamic(this, &ASTUBaseCharacter::OnTakeAnyDamageHandle);
 }
 
 // Called every frame
@@ -52,12 +50,6 @@ void ASTUBaseCharacter::Tick(float DeltaTime)
     HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), Health)));
 
     TakeDamage(0.1f, FDamageEvent{}, Controller, this);
-}
-
-void ASTUBaseCharacter::OnTakeAnyDamageHandle(AActor *DamagedActor, float Damage, const class UDamageType *DamageType,
-                                              class AController *InstigatedBy, AActor *DamageCauser)
-{
-    UE_LOG(LogBaseCharacter, Display, TEXT("Damage: %0.1f"), Damage);
 }
 
 // Called to bind functionality to input
