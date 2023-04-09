@@ -24,6 +24,12 @@ class SHOOTTHEMUP_API ASTUDevDamageActor : public AActor
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     FColor SphereColor = FColor::Red;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    float Damage = 1.0f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    bool DoFullDamage = false;
+
   protected:
     // Called when the game starts or when spawned
     virtual void BeginPlay() override;
