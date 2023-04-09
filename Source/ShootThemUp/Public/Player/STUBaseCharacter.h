@@ -33,6 +33,9 @@ class SHOOTTHEMUP_API ASTUBaseCharacter : public ACharacter
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     UTextRenderComponent *HealthTextComponent;
 
+    UPROPERTY(EditDefaultsOnly, Category = "Animations")
+    UAnimMontage *DeathAnimMontage;
+
     // Called when the game starts or when spawned
     virtual void BeginPlay() override;
 
@@ -62,4 +65,7 @@ class SHOOTTHEMUP_API ASTUBaseCharacter : public ACharacter
     // Mouse Input
     void LookUp(float Amount);
     void TurnAround(float Amount);
+
+    void OnDeathHandle();
+    void OnHealthChangedHandle(float Health);
 };

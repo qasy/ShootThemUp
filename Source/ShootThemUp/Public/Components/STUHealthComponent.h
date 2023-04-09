@@ -6,8 +6,11 @@
 #include "CoreMinimal.h"
 #include "STUHealthComponent.generated.h"
 
-UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
-class SHOOTTHEMUP_API USTUHealthComponent : public UActorComponent
+DECLARE_MULTICAST_DELEGATE(FOnDeath)
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnHealthChanged, float)
+
+    UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent)) class SHOOTTHEMUP_API USTUHealthComponent
+    : public UActorComponent
 {
     GENERATED_BODY()
 
@@ -19,6 +22,15 @@ class SHOOTTHEMUP_API USTUHealthComponent : public UActorComponent
     {
         return Health;
     }
+
+    UFUNCTION(BlueprintCallable)
+    bool IsDead() const
+    {
+        return (Health <= 0.0f);
+    }
+
+    FOnDeath OnDeath;
+    FOnHealthChanged OnHealthChanged;
 
   protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Health", meta = (ClampMin = "0.0", ClampMax = "1000.0"))
