@@ -3,7 +3,9 @@
 #include "Components/STUHealthComponent.h"
 // #include <Dev/STUFireDamageType.h>
 // #include <Dev/STUIceDamageType.h>
+#include <Engine/World.h>
 #include <GameFramework/Actor.h>
+#include <TimerManager.h>
 
 DEFINE_LOG_CATEGORY_STATIC(LogHealthComponent, All, All)
 // Sets default values for this component's properties
@@ -18,8 +20,7 @@ USTUHealthComponent::USTUHealthComponent()
 void USTUHealthComponent::BeginPlay()
 {
     Super::BeginPlay();
-    Health = MaxHealth;
-    OnHealthChanged.Broadcast(Health);
+    SetHealth(MaxHealth);
 
     AActor *ComponentOwner = GetOwner();
     if (ComponentOwner)
@@ -31,17 +32,22 @@ void USTUHealthComponent::BeginPlay()
 void USTUHealthComponent::OnTakeAnyDamageHandle(AActor *DamagedActor, float Damage, const class UDamageType *DamageType,
                                                 class AController *InstigatedBy, AActor *DamageCauser)
 {
-    if (Damage <= 0.0f || IsDead())
+    if (Damage <= 0.0f || IsDead() || !GetWorld())
     {
         return;
     }
 
-    Health = FMath::Clamp(Health - Damage, 0.0f, MaxHealth);
-    OnHealthChanged.Broadcast(Health);
+    SetHealth(Health - Damage);
+    GetWorld()->GetTimerManager().ClearTimer(HealTimerHandle);
 
     if (IsDead())
     {
         OnDeath.Broadcast();
+    }
+    else if (AutoHeal && GetWorld())
+    {
+        GetWorld()->GetTimerManager().SetTimer(HealTimerHandle, this, &USTUHealthComponent::HealUpdate, HealUpdateTime,
+                                               true, HealDelay);
     }
 
     // UE_LOG(LogHealthComponent, Display, TEXT("Damage: %0.1f from %s"), Damage, *DamageCauser->GetName());
@@ -58,4 +64,20 @@ void USTUHealthComponent::OnTakeAnyDamageHandle(AActor *DamagedActor, float Dama
     //        UE_LOG(LogHealthComponent, Display, TEXT("Ice Damage"));
     //    }
     //}
+}
+
+void USTUHealthComponent::HealUpdate()
+{
+    SetHealth(Health + HealModifier);
+
+    if (FMath::IsNearlyEqual(Health, MaxHealth) && GetWorld())
+    {
+        GetWorld()->GetTimerManager().ClearTimer(HealTimerHandle);
+    }
+}
+
+void USTUHealthComponent::SetHealth(float NewHealth)
+{
+    Health = FMath::Clamp(NewHealth, 0.0f, MaxHealth);
+    OnHealthChanged.Broadcast(Health);
 }

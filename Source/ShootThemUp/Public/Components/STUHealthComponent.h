@@ -26,23 +26,40 @@ DECLARE_MULTICAST_DELEGATE_OneParam(FOnHealthChanged, float)
     UFUNCTION(BlueprintCallable)
     bool IsDead() const
     {
-        return (Health <= 0.0f);
+        return (FMath::IsNearlyZero(Health) || Health < 0.0f);
     }
 
     FOnDeath OnDeath;
     FOnHealthChanged OnHealthChanged;
 
   protected:
+    // Called when the game starts
+    virtual void BeginPlay() override;
+
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Health", meta = (ClampMin = "0.0", ClampMax = "1000.0"))
     float MaxHealth = 100.0f;
 
-    // Called when the game starts
-    virtual void BeginPlay() override;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Heal")
+    bool AutoHeal = true;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Heal")
+    float HealUpdateTime = 1.0f;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Heal")
+    float HealDelay = 5.0f;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Heal")
+    float HealModifier = 5.0f;
 
   private:
     float Health = 0.0f;
 
+    FTimerHandle HealTimerHandle;
+
     UFUNCTION()
     void OnTakeAnyDamageHandle(AActor *DamagedActor, float Damage, const class UDamageType *DamageType,
                                class AController *InstigatedBy, AActor *DamageCauser);
+
+    void HealUpdate();
+    void SetHealth(float NewHealth);
 };

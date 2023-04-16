@@ -39,10 +39,10 @@ ASTUBaseCharacter::ASTUBaseCharacter(const FObjectInitializer &ObjInit)
 // Called when the game starts or when spawned
 void ASTUBaseCharacter::BeginPlay()
 {
+    // check(HealthComponent);
+    // check(HealthTextComponent);
+    // check(GetCharacterMovement());
     Super::BeginPlay();
-    check(HealthComponent);
-    check(HealthTextComponent);
-    check(GetCharacterMovement());
 
     OnHealthChangedHandle(HealthComponent->GetHealth());
     HealthComponent->OnDeath.AddUObject(this, &ASTUBaseCharacter::OnDeathHandle);
