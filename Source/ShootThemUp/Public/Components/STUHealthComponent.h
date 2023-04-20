@@ -51,13 +51,8 @@ DECLARE_MULTICAST_DELEGATE_OneParam(FOnHealthChanged, float)
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Heal", meta = (EditCondition = "AutoHeal"))
     float HealModifier = 5.0f;
 
-    // Called when the game starts
-    virtual void BeginPlay() override;
-
   private:
     float Health = 0.0f;
-    FTimerHandle HealTimerHandle;
-
     FTimerHandle HealTimerHandle;
 
     UFUNCTION()
