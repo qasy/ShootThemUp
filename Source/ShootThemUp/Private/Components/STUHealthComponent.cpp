@@ -44,7 +44,7 @@ void USTUHealthComponent::OnTakeAnyDamageHandle(AActor *DamagedActor, float Dama
     {
         OnDeath.Broadcast();
     }
-    else if (AutoHeal || GetWorld())
+    else if (AutoHeal)
     {
         GetWorld()->GetTimerManager().SetTimer(HealTimerHandle, this, &USTUHealthComponent::HealUpdate, HealUpdateTime,
                                                true, HealDelay);

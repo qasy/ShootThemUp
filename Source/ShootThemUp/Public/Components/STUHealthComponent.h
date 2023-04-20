@@ -33,6 +33,9 @@ DECLARE_MULTICAST_DELEGATE_OneParam(FOnHealthChanged, float)
     FOnHealthChanged OnHealthChanged;
 
   protected:
+    // Called when the game starts
+    virtual void BeginPlay() override;
+
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Health", meta = (ClampMin = "0.0", ClampMax = "1000.0"))
     float MaxHealth = 100.0f;
 
@@ -53,6 +56,8 @@ DECLARE_MULTICAST_DELEGATE_OneParam(FOnHealthChanged, float)
 
   private:
     float Health = 0.0f;
+    FTimerHandle HealTimerHandle;
+
     FTimerHandle HealTimerHandle;
 
     UFUNCTION()
